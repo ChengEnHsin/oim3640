@@ -23,5 +23,3 @@ def draw_inverse_triangle(size):
     for i in range(size, 0, -1):
         print("🧱" * i)
 draw_inverse_triangle(5)
-
-#create a function that draws a pyramid
