@@ -13,8 +13,8 @@ def main():
     t.speed(0)
     draw_square(t)
     draw_square(t, 50)
+    draw_square(t, 100)  # Pass the turtle instance to draw_square
     turtle.mainloop()
 
 if __name__ == "__main__":
     main()
-    
