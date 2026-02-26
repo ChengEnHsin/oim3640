@@ -20,3 +20,6 @@ I chose this because I’m actively building Cypher as a real venture, and I wan
 - How to create clear, professional visualizations
 - Whether to use pure Python or integrate pandas and matplotlib for better analysis
 
+
+
+# after feedback 
