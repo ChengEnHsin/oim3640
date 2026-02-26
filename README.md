@@ -8,3 +8,6 @@ Concentrations: Business Analytics and Operations Management
 
 Interests: Dance, Aviation, Travel, Books
 
+# #my projects
+
+[mini project](project)
