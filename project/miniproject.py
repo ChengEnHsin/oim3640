@@ -108,6 +108,67 @@ def find_break_even(data: List[Dict[str, float]]) -> Optional[int]:
     return None
 
 
+def run_sensitivity_analysis(
+    base_params: Dict[str, float],
+    scenarios: Dict[str, Dict[str, float]],
+    months: int = 24
+) -> Dict[str, List[Dict[str, float]]]:
+    """Run multiple scenarios and return results for comparison.
+    
+    Args:
+        base_params: Default parameters for the simulation
+        scenarios: Dictionary of scenario names to parameter overrides
+        months: Number of months to simulate
+        
+    Returns:
+        Dictionary mapping scenario names to their simulation data
+    """
+    results = {}
+    
+    # Run base scenario
+    results["base"] = simulate_months(months=months, **base_params)
+    
+    # Run each scenario
+    for scenario_name, param_overrides in scenarios.items():
+        scenario_params = base_params.copy()
+        scenario_params.update(param_overrides)
+        results[scenario_name] = simulate_months(months=months, **scenario_params)
+    
+    return results
+
+
+def compare_scenarios(results: Dict[str, List[Dict[str, float]]]) -> None:
+    """Print a comparison of key metrics across scenarios."""
+    if not results:
+        print("No results to compare.")
+        return
+    
+    # Get final month data for each scenario
+    final_data = {}
+    break_even_months = {}
+    
+    for scenario, data in results.items():
+        if data:
+            final_data[scenario] = data[-1]  # Last month
+            break_even_months[scenario] = find_break_even(data)
+    
+    # Print comparison table
+    print("\nScenario Comparison (Final Month):")
+    header = "Scenario | Free Users | Premium | Revenue | Cost | Profit | Break-even"
+    print(header)
+    print("-" * len(header))
+    
+    for scenario in sorted(results.keys()):
+        if scenario in final_data:
+            row = final_data[scenario]
+            be = break_even_months[scenario]
+            be_str = str(be) if be is not None else "N/A"
+            print(
+                f"{scenario:9s} | {int(row['free_users']):10d} | {int(row['premium_users']):8d} | "
+                f"{row['revenue']:7.0f} | {row['cost']:4.0f} | {row['profit']:6.0f} | {be_str:10s}"
+            )
+
+
 def run_scenario(**params) -> None:
     """Helper to run simulation with provided parameters and show results."""
     months = params.pop("months", 24)
@@ -126,3 +187,39 @@ def run_scenario(**params) -> None:
 if __name__ == "__main__":
     # default run
     run_scenario()
+    
+    print("\n" + "="*60)
+    print("SENSITIVITY ANALYSIS EXAMPLES")
+    print("="*60)
+    
+    # Define base parameters
+    base_params = {
+        "starting_free": 1000,
+        "starting_premium": 50,
+        "monthly_new_free": 0.1,
+        "conversion_rate": 0.02,
+        "churn_free": 0.01,
+        "churn_premium": 0.005,
+        "premium_price": 10.0,
+        "job_post_price": 50.0,
+        "featured_listing_price": 20.0,
+        "jobs_per_user": 0.002,
+        "featured_per_user": 0.005,
+        "fixed_cost": 2000.0,
+        "variable_cost_per_user": 0.5,
+    }
+    
+    # Define scenarios to test
+    scenarios = {
+        "higher_growth": {"monthly_new_free": 0.15, "conversion_rate": 0.03},
+        "lower_growth": {"monthly_new_free": 0.05, "conversion_rate": 0.01},
+        "higher_churn": {"churn_free": 0.02, "churn_premium": 0.01},
+        "premium_pricing": {"premium_price": 15.0},
+        "cost_reduction": {"fixed_cost": 1500.0, "variable_cost_per_user": 0.3},
+    }
+    
+    # Run sensitivity analysis
+    results = run_sensitivity_analysis(base_params, scenarios, months=24)
+    
+    # Compare scenarios
+    compare_scenarios(results)
