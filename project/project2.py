@@ -139,6 +139,7 @@ import matplotlib.pyplot as plt
 
 # Bar chart of top words for each book
 fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+
 axes = axes.flatten()
 for i, (title, d) in enumerate(data.items()):
     counts = d['counts']
