@@ -97,3 +97,20 @@ This project shows that text mining can reveal meaningful insights about literat
 
 Overall, this project demonstrates how data analysis can complement traditional reading by providing a more quantitative perspective on texts.
 
+
+# Milestone Approach and Reflection
+
+For Milestones 1 and 2, I completed the core parts of this project using only built-in Python concepts such as strings, lists, dictionaries, sets, and file I/O. This meant I manually cleaned the text, split it into words, tracked frequencies, and compared vocabulary across books without relying on external libraries. Doing it this way helped me understand what is actually happening behind text analysis instead of just calling a function and accepting the output.
+
+Working through the analysis the hard way made me think more carefully about each step. I had to decide how to remove punctuation, how to structure word counts using dictionaries, and how to calculate metrics like vocabulary richness meanwhile giving AI the right instrutions to ensure accuracy. This process made the logic much clearer and reinforced the core programming concepts we have been learning in class.
+
+After completing the foundational analysis, I expanded the project by incorporating tools like matplotlib for visualization and more advanced techniques such as TF-IDF. These additions are reflected in my later code, where I move beyond basic Python to generate charts and highlight important words across texts. This progression shows how the project evolved from foundational implementation to more advanced analysis. 
+
+Comparing the two approaches, using libraries was significantly faster and made it easier to produce clean visualizations and more advanced insights. However, starting with built-in Python was more valuable for learning. It gave me a clear understanding of how the data is processed step by step, which made the library-based approach feel much more intuitive rather than like a black box.
+
+One especially meaningful connection for me was TF-IDF. I was introduced to TF-IDF last semester in my machine learning class at Babson, but this project helped me truly understand how it works in practice. Beyond TF-IDF, the overall text cleaning and mining process also felt familiar because I had learned similar workflows in that class. What made this project interesting was applying those same concepts in a different environment. In my machine learning course, I used RStudio, so working in VS Code with Python gave me a new perspective on how the same ideas translate across tools and languages.
+
+Overall, this project showed me that while libraries are powerful for efficiency and presentation, doing the analysis manually first builds a much stronger foundation. It made the transition to more advanced tools smoother and helped me better interpret and explain my results.
+
+
+
