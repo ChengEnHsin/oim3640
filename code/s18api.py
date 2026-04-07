@@ -45,12 +45,12 @@ import os
 #     print(msg)
 
 
-# response = requests.delete(
-#     'https://oim.108122.xyz/message',
-#     headers={'X-Token': 'chloechloe'}
-# )
-# print(response.status_code)
-# print(response.json())
+response = requests.delete(
+     'https://oim.108122.xyz/message',
+     headers={'X-Token': 'chloechloe'}
+ )
+print(response.status_code)
+print(response.json())
 
 load_dotenv()  # Load environment variables from .env file
 API_KEY = os.getenv('OPENWEATHER_KEY')  # Don't hardcode this!
