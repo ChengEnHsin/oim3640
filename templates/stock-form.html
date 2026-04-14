@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Ticker Form</title>
+</head>
+<body>
+    <h1>Stock Ticker</h1>
+    <form action="/search-stock" method="post">
+        <label for="ticker">Ticker Symbol</label>
+        <input type="text" id="ticker" name="ticker" placeholder="e.g., AAPL, GOOGL, MSFT" required>
+
+        <label for="market">Market</label>
+        <select id="market" name="market" required>
+            <option value="">Select a market</option>
+            <option value="nasdaq">NASDAQ</option>
+            <option value="nyse">NYSE</option>
+            <option value="other">Other</option>
+        </select>
+
+        <label for="period">Time Period</label>
+        <select id="period" name="period" required>
+            <option value="">Select a period</option>
+            <option value="1day">1 Day</option>
+            <option value="1week">1 Week</option>
+            <option value="1month">1 Month</option>
+            <option value="3months">3 Months</option>
+            <option value="1year">1 Year</option>
+        </select>
+
+        <button type="submit">Search</button>
+    </form>
+</body>
+</html>

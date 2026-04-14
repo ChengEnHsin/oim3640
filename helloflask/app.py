@@ -1,6 +1,8 @@
 from flask import Flask
 import requests
 import os
+import render_template
+
 from dotenv import load_dotenv
 
 load_dotenv()
