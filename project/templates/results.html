@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 400px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+        
+        .result-box {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .result-item {
+            margin-bottom: 15px;
+        }
+        
+        .label {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+        
+        .value {
+            color: #333;
+            font-size: 1.2rem;
+            margin-top: 4px;
+        }
+        
+        .error-box {
+            background: #fee;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #e74c3c;
+            color: #c0392b;
+        }
+        
+        .back-button {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background: #5568d3;
+        }
+        
+        .wheelchair-yes {
+            color: #27ae60;
+            font-weight: 600;
+        }
+        
+        .wheelchair-no {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Results</h1>
+        
+        {% if error %}
+            <div class="error-box">
+                <p>{{ error }}</p>
+            </div>
+        {% else %}
+            <div class="result-box">
+                <div class="result-item">
+                    <div class="label">Location Searched</div>
+                    <div class="value">{{ place_name }}</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="label">Nearest MBTA Stop</div>
+                    <div class="value">{{ stop_name }}</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="label">Wheelchair Accessible</div>
+                    <div class="value {% if wheelchair_accessible %}wheelchair-yes{% else %}wheelchair-no{% endif %}">
+                        {% if wheelchair_accessible %}Yes ✓{% else %}No ✗{% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        
+        <a href="/" class="back-button">← Search Again</a>
+    </div>
+</body>
+</html>
