@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Statistics - InternTrack{% endblock %}
+
+{% block content %}
+<div class="statistics-page">
+    <h1>Application Statistics</h1>
+    <p class="subtitle">Analyze your recruiting journey</p>
+
+    <div class="stats-grid">
+        <div class="stat-card large">
+            <h3>Total Applications</h3>
+            <p class="stat-value">{{ stats.total }}</p>
+        </div>
+
+        <div class="stat-card large">
+            <h3>Response Rate</h3>
+            <p class="stat-value">{{ stats.response_rate }}%</p>
+            <p class="stat-detail">{{ stats.responded }} out of {{ stats.total }} responded</p>
+        </div>
+
+        <div class="stat-card large">
+            <h3>Rejection Rate</h3>
+            <p class="stat-value">{{ stats.rejection_rate }}%</p>
+            <p class="stat-detail">{{ stats.rejections }} rejections</p>
+        </div>
+
+        <div class="stat-card large">
+            <h3>Success Rate</h3>
+            <p class="stat-value">{{ (((stats.by_status.get('Offer Extended', 0) + stats.by_status.get('Offer Accepted', 0)) / stats.total * 100) if stats.total > 0 else 0)|round(1) }}%</p>
+            <p class="stat-detail">{{ stats.by_status.get('Offer Extended', 0) + stats.by_status.get('Offer Accepted', 0) }} offers</p>
+        </div>
+    </div>
+
+    <div class="stats-section">
+        <h2>Status Breakdown</h2>
+        <div class="chart-container">
+            <div class="status-breakdown">
+                {% for status, count in stats.by_status.items() %}
+                    <div class="status-item">
+                        <div class="status-label-wrapper">
+                            <span class="status-label">{{ status }}</span>
+                        </div>
+                        <div class="status-bar-container">
+                            <div class="status-bar" style="width: {{ (count / stats.total * 100) if stats.total > 0 else 0 }}%; background-color: {{ status_colors.get(status, '#95a5a6') }}"></div>
+                        </div>
+                        <span class="status-count">{{ count }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-section">
+        <h2>Applications by Location</h2>
+        {% if stats.by_location %}
+            <div class="location-breakdown">
+                {% for location, count in stats.by_location.items()|sort %}
+                    <div class="location-item">
+                        <span class="location-name">{{ location }}</span>
+                        <div class="location-bar">
+                            <div class="location-fill" style="width: {{ (count / stats.total * 100) if stats.total > 0 else 0 }}%"></div>
+                        </div>
+                        <span class="location-count">{{ count }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-message">No location data available</p>
+        {% endif %}
+    </div>
+
+    <div class="stats-section">
+        <h2>Key Insights</h2>
+        <div class="insights">
+            <div class="insight-card">
+                <h4>📈 Key Metric</h4>
+                {% if stats.total == 0 %}
+                    <p>Add your first application to start tracking!</p>
+                {% else %}
+                    <p>You have a <strong>{{ stats.response_rate }}%</strong> response rate across <strong>{{ stats.total }}</strong> applications.</p>
+                {% endif %}
+            </div>
+
+            <div class="insight-card">
+                <h4>🎯 Next Step</h4>
+                {% if stats.by_status.get('Offer Extended', 0) > 0 %}
+                    <p>You have <strong>{{ stats.by_status.get('Offer Extended', 0) }}</strong> offers extended! Start evaluating them.</p>
+                {% elif stats.by_status.get('Interview Scheduled', 0) > 0 %}
+                    <p>You have <strong>{{ stats.by_status.get('Interview Scheduled', 0) }}</strong> interviews scheduled. Prepare well!</p>
+                {% elif stats.by_status.get('Under Review', 0) > 0 %}
+                    <p>You have <strong>{{ stats.by_status.get('Under Review', 0) }}</strong> applications under review. Follow up soon!</p>
+                {% else %}
+                    <p>Keep applying! Your next interview might be just around the corner.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

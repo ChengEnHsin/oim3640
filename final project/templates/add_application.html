@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Add Application - InternTrack{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <h1>Add New Application</h1>
+    <p class="subtitle">Track your internship application</p>
+
+    {% if error %}
+        <div class="alert alert-error">{{ error }}</div>
+    {% endif %}
+
+    <div class="form-container">
+        <form method="POST" class="form">
+            <div class="form-group">
+                <label for="company">Company Name *</label>
+                <input type="text" id="company" name="company" required placeholder="e.g., Google, Microsoft">
+            </div>
+
+            <div class="form-group">
+                <label for="role">Job Role/Position *</label>
+                <input type="text" id="role" name="role" required placeholder="e.g., Software Engineer Intern">
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location" placeholder="e.g., Mountain View, CA or Remote">
+            </div>
+
+            <div class="form-group">
+                <label for="date_applied">Date Applied</label>
+                <input type="date" id="date_applied" name="date_applied">
+                <small>Leave blank for today's date</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Add Application</button>
+                <a href="{{ url_for('view_applications') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
