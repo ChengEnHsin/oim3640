@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: interntrack
+    env: python
+    region: oregon
+    plan: free
+    runtime: python-3.11
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn web_app:app
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.11.0

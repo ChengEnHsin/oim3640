@@ -11,8 +11,11 @@ from datetime import datetime
 
 app = Flask(__name__)
 
+# Configuration for production
+app.config['ENV'] = os.environ.get('FLASK_ENV', 'development')
+DEBUG = app.config['ENV'] == 'development'
 
-# Configuration
+# File for persistent data storage
 DATA_FILE = "applications.json"
 VALID_STATUSES = ["Applied", "Under Review", "Interview Scheduled", "Rejected", "Offer Extended", "Offer Accepted"]
 
@@ -208,4 +211,5 @@ def get_status_color(status):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=DEBUG)
