@@ -47,7 +47,7 @@ Dashboard - InternTrack
         <h2>Recent Applications</h2>
         {% if applications %}
             <div class="recent-apps">
-                {% for app in applications|reverse|list|first(5) %}
+                {% for app in (applications|reverse|list)[:5] %}
                     <div class="app-card">
                         <div class="app-header">
                             <h3>{{ app.company }}</h3>
