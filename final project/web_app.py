@@ -94,6 +94,20 @@ def get_suggested_internships():
     ]
 
 
+def get_upcoming_interview_reminders(applications):
+    """Extract upcoming interview reminders from applications."""
+    return [
+        {
+            "company": app.get("company", "Unknown"),
+            "role": app.get("role", "Interview"),
+            "date": app.get("date_updated", "TBD"),
+            "location": app.get("location", "Remote"),
+        }
+        for app in applications
+        if app.get("status") == "Interview Scheduled"
+    ]
+
+
 @app.route('/')
 def index():
     """Home page - Dashboard with statistics."""
@@ -106,8 +120,19 @@ def index():
     
     # Get suggested internships
     suggested = get_suggested_internships()
+    reminders = get_upcoming_interview_reminders(applications)
+
+    # Build status color mapping for dashboard progress bars
+    status_colors = {status: get_status_color(status) for status in stats.get('by_status', {}).keys()}
     
-    return render_template('index.html', stats=stats, applications=applications, suggested=suggested)
+    return render_template(
+        'index.html',
+        stats=stats,
+        applications=applications,
+        suggested=suggested,
+        reminders=reminders,
+        status_colors=status_colors,
+    )
 
 
 @app.route('/applications')

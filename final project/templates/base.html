@@ -38,5 +38,33 @@
             <p>&copy; 2026 InternTrack - Centralized Internship Tracker by Chloe Hsin</p>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const page = document.querySelector('main.container');
+            if (!page) return;
+            page.classList.add('page-enter');
+            requestAnimationFrame(() => page.classList.remove('page-enter'));
+
+            const internalLinks = Array.from(document.querySelectorAll('a[href]'))
+                .filter(link => {
+                    const href = link.getAttribute('href');
+                    return href && !href.startsWith('#') && !href.startsWith('javascript:') && link.target !== '_blank';
+                });
+
+            internalLinks.forEach(link => {
+                const url = new URL(link.href, window.location.href);
+                if (url.origin !== window.location.origin) return;
+
+                link.addEventListener('click', event => {
+                    const href = link.getAttribute('href');
+                    if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
+                    event.preventDefault();
+                    page.classList.add('page-exit');
+                    setTimeout(() => { window.location.href = href; }, 250);
+                });
+            });
+        });
+    </script>
 </body>
 </html>

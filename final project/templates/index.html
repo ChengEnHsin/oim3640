@@ -4,8 +4,35 @@
 
 {% block content %}
 <div class="dashboard">
-    <h1>Dashboard</h1>
-    <p class="subtitle">Your internship application overview</p>
+    <section class="hero-panel">
+        <div class="hero-copy">
+            <span class="hero-label">Your internship search</span>
+            <h1>Reinvented</h1>
+            <p class="hero-text">Track opportunities, measure recruiting progress, and stay organized in one beautiful dashboard.</p>
+            <div class="hero-actions">
+                <a href="{{ url_for('add_application') }}" class="btn btn-primary btn-hero">Add Application</a>
+                <a href="{{ url_for('view_applications') }}" class="btn btn-secondary btn-hero">View Applications</a>
+            </div>
+        </div>
+        <div class="hero-cards">
+            <div class="hero-stat-card">
+                <span class="hero-stat-label">Total applications</span>
+                <strong>{{ stats.total }}</strong>
+            </div>
+            <div class="hero-stat-card">
+                <span class="hero-stat-label">In progress</span>
+                <strong>{{ stats.by_status.get('Under Review', 0) + stats.by_status.get('Interview Scheduled', 0) }}</strong>
+            </div>
+            <div class="hero-stat-card">
+                <span class="hero-stat-label">Active rate</span>
+                <strong>{{ stats.response_rate }}%</strong>
+            </div>
+            <div class="hero-stat-card">
+                <span class="hero-stat-label">Offers</span>
+                <strong>{{ stats.by_status.get('Offer Extended', 0) + stats.by_status.get('Offer Accepted', 0) }}</strong>
+            </div>
+        </div>
+    </section>
 
     <div class="stats-grid">
         <div class="stat-card">
@@ -71,14 +98,17 @@
         {% endif %}
     </div>
 
-    <div class="dashboard-section">
-        <h2>Status Breakdown</h2>
+    <div class="dashboard-section dashboard-panel">
+        <div class="section-heading">
+            <h2>Status Breakdown</h2>
+            <p>See how your applications are distributed across stages.</p>
+        </div>
         <div class="status-breakdown">
             {% for status, count in stats.by_status.items() %}
                 <div class="status-item">
                     <span class="status-label">{{ status }}</span>
                     <div class="status-bar-container">
-                        <div class="status-bar" style="width: {{ (count / stats.total * 100) if stats.total > 0 else 0 }}%"></div>
+                        <div class="status-bar" style="width: {{ (count / stats.total * 100) if stats.total > 0 else 0 }}%; background-color: {{ status_colors.get(status, '#95a5a6') }}"></div>
                     </div>
                     <span class="status-count">{{ count }}</span>
                 </div>
@@ -86,7 +116,34 @@
         </div>
     </div>
 
-    <div class="dashboard-section">
+    <div class="dashboard-section dashboard-panel">
+        <div class="section-heading">
+            <h2>Upcoming Interview Reminders</h2>
+            <p>Keep track of interviews that are coming up so you can prepare on time.</p>
+        </div>
+        <div class="reminder-list">
+            {% if reminders %}
+                {% for reminder in reminders %}
+                    <div class="reminder-card">
+                        <div class="reminder-card-header">
+                            <div>
+                                <h3>{{ reminder.company }}</h3>
+                                <p class="reminder-role">{{ reminder.role }}</p>
+                            </div>
+                            <span class="reminder-date">📅 {{ reminder.date }}</span>
+                        </div>
+                        <p class="reminder-location">📍 {{ reminder.location }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <p>No interviews are scheduled yet. <a href="{{ url_for('view_applications') }}">Mark an interview</a> to get reminders here.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="dashboard-section dashboard-panel">
         <h2>Suggested Internships</h2>
         <p class="subtitle" style="margin-bottom: 1.5rem; font-size: 0.95rem;">Companies actively recruiting for internships</p>
         <div class="suggested-internships">
