@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-Dashboard - InternTrack
+{% block title %}Dashboard - InternTrack{% endblock %}
 
-
+{% block content %}
 <div class="dashboard">
     <h1>Dashboard</h1>
     <p class="subtitle">Your internship application overview</p>
@@ -85,5 +85,42 @@ Dashboard - InternTrack
             {% endfor %}
         </div>
     </div>
+
+    <div class="dashboard-section">
+        <h2>Suggested Internships</h2>
+        <p class="subtitle" style="margin-bottom: 1.5rem; font-size: 0.95rem;">Companies actively recruiting for internships</p>
+        <div class="suggested-internships">
+            {% for internship in suggested %}
+                <div class="internship-card">
+                    <div class="internship-header">
+                        <h3>{{ internship.company }}</h3>
+                        <span class="season-badge">{{ internship.season }}</span>
+                    </div>
+                    <p class="internship-role">{{ internship.role }}</p>
+                    <p class="internship-location">📍 {{ internship.location }}</p>
+                    <button class="btn btn-small btn-apply" onclick="openCareerPage('{{ internship.company }}')">View Openings</button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 </div>
+
+<script>
+function openCareerPage(company) {
+    const careerPages = {
+        'Google': 'https://careers.google.com',
+        'Microsoft': 'https://careers.microsoft.com',
+        'Amazon': 'https://www.amazon.jobs',
+        'Apple': 'https://www.apple.com/careers',
+        'Meta': 'https://www.metacareers.com',
+        'Goldman Sachs': 'https://www.goldmansachs.com/careers',
+        'JP Morgan': 'https://careers.jpmorgan.com',
+        'McKinsey': 'https://www.mckinsey.com/careers',
+        'Tesla': 'https://www.tesla.com/careers',
+        'Stripe': 'https://stripe.com/jobs',
+    };
+    window.open(careerPages[company] || 'https://www.linkedin.com/jobs', '_blank');
+}
+</script>
+{% endblock %}
 

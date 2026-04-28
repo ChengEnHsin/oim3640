@@ -78,6 +78,22 @@ def calculate_statistics(applications):
     }
 
 
+def get_suggested_internships():
+    """Get list of suggested internships to apply to."""
+    return [
+        {"company": "Google", "role": "Software Engineer Intern", "location": "Mountain View, CA", "season": "Summer 2026"},
+        {"company": "Microsoft", "role": "Internship Program - Tech", "location": "Redmond, WA", "season": "Summer 2026"},
+        {"company": "Amazon", "role": "Software Development Engineer Intern", "location": "Seattle, WA", "season": "Summer 2026"},
+        {"company": "Apple", "role": "Software Engineering Internship", "location": "Cupertino, CA", "season": "Summer 2026"},
+        {"company": "Meta", "role": "Engineering Internship", "location": "Menlo Park, CA", "season": "Summer 2026"},
+        {"company": "Goldman Sachs", "role": "Summer Internship Program", "location": "New York, NY", "season": "Summer 2026"},
+        {"company": "JP Morgan", "role": "Summer Analyst Program", "location": "New York, NY", "season": "Summer 2026"},
+        {"company": "McKinsey", "role": "Young Talent Program", "location": "New York, NY", "season": "Summer 2026"},
+        {"company": "Tesla", "role": "Engineering Internship", "location": "Palo Alto, CA", "season": "Summer 2026"},
+        {"company": "Stripe", "role": "Software Engineering Internship", "location": "San Francisco, CA", "season": "Summer 2026"},
+    ]
+
+
 @app.route('/')
 def index():
     """Home page - Dashboard with statistics."""
@@ -88,7 +104,10 @@ def index():
     for app in applications:
         app['status_color'] = get_status_color(app['status'])
     
-    return render_template('index.html', stats=stats, applications=applications)
+    # Get suggested internships
+    suggested = get_suggested_internships()
+    
+    return render_template('index.html', stats=stats, applications=applications, suggested=suggested)
 
 
 @app.route('/applications')

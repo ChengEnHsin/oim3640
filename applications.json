@@ -2,9 +2,18 @@
   {
     "id": 1,
     "company": "amazon",
-    "role": "business analysy",
+    "role": "business analyst",
     "date_applied": "2026-04-28",
     "location": "seattle",
+    "status": "Interview Scheduled",
+    "date_updated": "2026-04-28"
+  },
+  {
+    "id": 2,
+    "company": "google",
+    "role": "Operations Intern",
+    "date_applied": "2026-04-08",
+    "location": "California",
     "status": "Applied",
     "date_updated": "2026-04-28"
   }
