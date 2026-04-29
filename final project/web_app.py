@@ -461,7 +461,7 @@ def statistics():
 
 @app.route('/recommendations', methods=['POST'])
 def recommendations():
-    """Generate GPT-driven internship recommendations."""
+    """Generate internship recommendations."""
     focus = request.form.get('focus', '').strip()
     applications = load_applications()
     stats = calculate_statistics(applications)
