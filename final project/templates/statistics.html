@@ -108,4 +108,31 @@
   </p>
 </div>
 
+<div class="card" style="margin-top:22px">
+  <h2 style="font-size:1.2rem">GPT Recommendations</h2>
+  <p style="color:var(--ink-soft); max-width:62ch; margin-bottom:18px;">
+    Ask AI for tailored guidance on future internships, companies to target, and the best fields or roles to pursue next.
+  </p>
+  {% if recommendation_error %}
+    <div class="empty" style="padding:20px 16px; border-color:#e0b4b4; background:#fff6f6; color:#9f3a38; margin-bottom:18px;">
+      {{ recommendation_error }}
+    </div>
+  {% endif %}
+  <form method="POST" action="{{ url_for('recommendations') }}">
+    <div class="field" style="margin-bottom:1rem;">
+      <label for="focus">Optional focus</label>
+      <input id="focus" name="focus" type="text" value="{{ prompt_focus or '' }}" placeholder="e.g. software engineering, product design, remote roles" />
+    </div>
+    <div class="field-actions" style="justify-content:flex-start; gap:0.75rem; padding:0; margin:0;">
+      <button type="submit" class="btn btn-primary">Generate Recommendations</button>
+      <span style="color:var(--ink-soft); align-self:center; font-size:.95rem;"></span>
+    </div>
+  </form>
+  {% if recommendation %}
+    <div class="recommendation-card" style="margin-top:18px; white-space:pre-wrap; background:#f8fbff; padding:18px; border-radius:14px; border:1px solid #dde5f1; color:#2a3b52;">
+      {{ recommendation }}
+    </div>
+  {% endif %}
+</div>
+
 {% endblock %}

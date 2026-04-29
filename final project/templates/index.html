@@ -146,7 +146,10 @@
               <div class="role">{{ s.role }} · {{ s.company }}</div>
               <div class="sub">{{ s.location }} — {{ s.season }}</div>
             </div>
-            <a href="{{ url_for('add_application') }}" class="btn btn-ghost" style="font-size:.78rem; padding:6px 12px">Track</a>
+            <div style="display:flex; flex-direction:column; gap:.5rem; align-items:flex-end;">
+              <a href="{{ s.job_url }}" target="_blank" rel="noopener" class="btn btn-ghost" style="font-size:.78rem; padding:6px 12px">View jobs</a>
+              <a href="{{ url_for('add_application') }}" class="btn btn-ghost" style="font-size:.78rem; padding:6px 12px">Track</a>
+            </div>
           </li>
         {% endfor %}
       </ul>
@@ -155,45 +158,26 @@
         <p style="margin:0">No suggestions available.</p>
       </div>
     {% endif %}
-  </div>
-</section>
 
-{% endblock %}
-ss="sub">{{ r.location }} — Updated {{ r.date }}</div>
-            </div>
-            <span class="pill pill-interview">Interview</span>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <div class="empty" style="padding:36px 10px">
-        <p style="margin:0">No upcoming interviews scheduled.</p>
+    {% if generated_error %}
+      <div class="flash" style="margin-top:18px; border-color:#e0b4b4; background:#fff6f6; color:#9f3a38;">
+        {{ generated_error }}
+      </div>
+    {% elif generated_notice %}
+      <div class="flash" style="margin-top:18px;">
+        {{ generated_notice }}
       </div>
     {% endif %}
-  </div>
 
-  <div class="card">
-    <div class="section-head" style="margin-top:0">
-      <h2 style="font-size:1.2rem">Suggested Internships</h2>
-      <span class="more">Curated picks</span>
-    </div>
+    <form method="POST" action="{{ url_for('generate_internships') }}" style="margin-top:18px;">
+      <button type="submit" class="btn btn-primary"{% if not gpt_key_available %} disabled{% endif %}>
+        Generate more internships
+      </button>
+    </form>
 
-    {% if suggested and suggested|length > 0 %}
-      <ul class="recent">
-        {% for s in suggested[:5] %}
-          <li>
-            <div class="avatar">{{ s.company[:1]|upper }}</div>
-            <div class="meta">
-              <div class="role">{{ s.role }} · {{ s.company }}</div>
-              <div class="sub">{{ s.location }} — {{ s.season }}</div>
-            </div>
-            <a href="{{ url_for('add_application') }}" class="btn btn-ghost" style="font-size:.78rem; padding:6px 12px">Track</a>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <div class="empty" style="padding:36px 10px">
-        <p style="margin:0">No suggestions available.</p>
+    {% if not gpt_key_available %}
+      <div class="empty" style="padding:18px 10px; margin-top:12px;">
+        Set GPT_KEY in your .env to generate current job-platform internship listings.
       </div>
     {% endif %}
   </div>
