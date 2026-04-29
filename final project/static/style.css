@@ -28,7 +28,9 @@ body {
     color: var(--text-color);
     background: radial-gradient(circle at top, #edf2ff 0%, #f5f7fa 40%, #eef2f8 100%);
     line-height: 1.6;
+    overflow-x: hidden;
 }
+
 
 .container {
     max-width: 1200px;
@@ -99,8 +101,8 @@ body {
 }
 
 .hero-stat-card {
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 20px;
     padding: 1.5rem;
     color: white;
@@ -199,7 +201,8 @@ body {
 .app-card {
     border-radius: 24px;
     padding: 1.5rem;
-    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    background: white;
+    border: 1px solid var(--light-color);
     box-shadow: 0 12px 28px rgba(31, 45, 76, 0.08);
 }
 
@@ -333,8 +336,8 @@ main {
 }
 
 main.page-enter {
-    opacity: 0;
-    transform: translateY(20px);
+    opacity: 1 !important;
+    transform: translateY(0) !important;
 }
 
 main.page-exit {

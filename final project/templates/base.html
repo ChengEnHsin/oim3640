@@ -43,8 +43,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const page = document.querySelector('main.container');
             if (!page) return;
-            page.classList.add('page-enter');
-            requestAnimationFrame(() => page.classList.remove('page-enter'));
+            page.classList.remove('page-enter');
 
             const internalLinks = Array.from(document.querySelectorAll('a[href]'))
                 .filter(link => {
@@ -61,7 +60,9 @@
                     if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
                     event.preventDefault();
                     page.classList.add('page-exit');
-                    setTimeout(() => { window.location.href = href; }, 250);
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 250);
                 });
             });
         });

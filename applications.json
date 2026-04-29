@@ -16,5 +16,32 @@
     "location": "California",
     "status": "Applied",
     "date_updated": "2026-04-28"
+  },
+  {
+    "id": 3,
+    "company": "meta",
+    "role": "design intern",
+    "date_applied": "2026-04-24",
+    "location": "california",
+    "status": "Rejected",
+    "date_updated": "2026-04-28"
+  },
+  {
+    "id": 4,
+    "company": "lululemon",
+    "role": "business analyst",
+    "date_applied": "2026-04-06",
+    "location": "boston",
+    "status": "Offer Extended",
+    "date_updated": "2026-04-28"
+  },
+  {
+    "id": 5,
+    "company": "tiktok",
+    "role": "Operations Intern",
+    "date_applied": "2026-04-16",
+    "location": "california",
+    "status": "Applied",
+    "date_updated": "2026-04-28"
   }
 ]
