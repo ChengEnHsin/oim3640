@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InternTrack — Design Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,450;9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/style.css" />
+  <style>
+    /* Preview-only helpers */
+    .view { display: none; }
+    .view.active { display: block; }
+    .page-tabs {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; gap: 6px;
+      background: rgba(247,242,234,.85);
+      backdrop-filter: blur(8px);
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-tabs button {
+      font: inherit; font-weight: 500;
+      padding: 8px 14px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--ink-soft);
+      cursor: pointer;
+      transition: all .2s var(--ease);
+    }
+    .page-tabs button:hover { border-color: var(--accent-soft); color: var(--ink); }
+    .page-tabs button.active { background: var(--accent-deep); color: #fdfbf6; border-color: var(--accent-deep); }
+  </style>
+</head>
+<body>
+  <div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <a href="#" class="brand" style="color:inherit; text-decoration:none">
+        <span class="brand-dot"></span>
+        <span>
+          InternTrack
+          <small>Application Tracker</small>
+        </span>
+      </a>
+
+      <nav class="nav" id="sidenav">
+        <a href="#" data-view="dashboard" class="active">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>
+          Dashboard
+        </a>
+        <a href="#" data-view="applications">
+          <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
+          Applications
+        </a>
+        <a href="#" data-view="add">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+          New Application
+        </a>
+        <a href="#" data-view="stats">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+          Statistics
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        Built for OIM 3640<br/>
+        &copy; 2026 InternTrack
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+
+      <!-- ============== DASHBOARD ============== -->
+      <section class="view active" data-view="dashboard">
+        <header class="page-head">
+          <div>
+            <div class="eyebrow">Overview</div>
+            <h1>Welcome back, Chloe</h1>
+            <p class="lede">A calm, organized view of every internship and job application you're tracking.</p>
+          </div>
+          <a href="#" class="btn btn-primary" onclick="showView('add'); return false;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            New Application
+          </a>
+        </header>
+
+        <section class="stat-grid">
+          <div class="stat"><div class="label">Total Applications</div><div class="value" data-count="42">0</div><div class="delta">All time</div></div>
+          <div class="stat"><div class="label">Response Rate</div><div class="value" data-count="38" data-suffix="%">0%</div><div class="delta">Heard back from</div></div>
+          <div class="stat"><div class="label">Active Pipeline</div><div class="value" data-count="7">0</div><div class="delta">Interviews &amp; offers</div></div>
+          <div class="stat"><div class="label">Rejection Rate</div><div class="value" data-count="24" data-suffix="%">0%</div><div class="delta">Of total applications</div></div>
+        </section>
+
+        <section class="cols">
+          <div class="card">
+            <div class="section-head" style="margin-top:0">
+              <h2 style="font-size:1.2rem">Recent Activity</h2>
+              <a class="more" href="#" onclick="showView('applications'); return false;">View all →</a>
+            </div>
+            <ul class="recent">
+              <li>
+                <div class="avatar">A</div>
+                <div class="meta"><div class="role">Software Engineering Intern · Anthropic</div><div class="sub">San Francisco, CA — Applied 2026-04-12</div></div>
+                <span class="pill pill-interview">Interview Scheduled</span>
+              </li>
+              <li>
+                <div class="avatar">S</div>
+                <div class="meta"><div class="role">Product Design Intern · Stripe</div><div class="sub">Remote — Applied 2026-04-08</div></div>
+                <span class="pill pill-review">Under Review</span>
+              </li>
+              <li>
+                <div class="avatar">F</div>
+                <div class="meta"><div class="role">Data Analyst Intern · Figma</div><div class="sub">New York, NY — Applied 2026-04-05</div></div>
+                <span class="pill pill-applied">Applied</span>
+              </li>
+              <li>
+                <div class="avatar">N</div>
+                <div class="meta"><div class="role">UX Research Intern · Notion</div><div class="sub">Remote — Applied 2026-03-28</div></div>
+                <span class="pill pill-offer">Offer Extended</span>
+              </li>
+              <li>
+                <div class="avatar">L</div>
+                <div class="meta"><div class="role">Software Engineer Intern · Linear</div><div class="sub">Boston, MA — Applied 2026-03-22</div></div>
+                <span class="pill pill-rejected">Rejected</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2 style="font-size:1.2rem">Status Breakdown</h2>
+            <div class="bars" style="margin-top:18px">
+              <div class="bar-row"><div class="name">Applied</div><div class="bar-track"><div class="bar-fill" data-width="40"></div></div><div class="count">17</div></div>
+              <div class="bar-row"><div class="name">Under Review</div><div class="bar-track"><div class="bar-fill" data-width="22"></div></div><div class="count">9</div></div>
+              <div class="bar-row"><div class="name">Interview Scheduled</div><div class="bar-track"><div class="bar-fill" data-width="14"></div></div><div class="count">6</div></div>
+              <div class="bar-row"><div class="name">Offer Extended</div><div class="bar-track"><div class="bar-fill" data-width="5"></div></div><div class="count">2</div></div>
+              <div class="bar-row"><div class="name">Offer Accepted</div><div class="bar-track"><div class="bar-fill" data-width="2"></div></div><div class="count">1</div></div>
+              <div class="bar-row"><div class="name">Rejected</div><div class="bar-track"><div class="bar-fill" data-width="17"></div></div><div class="count">7</div></div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- ============== APPLICATIONS ============== -->
+      <section class="view" data-view="applications">
+        <header class="page-head">
+          <div>
+            <div class="eyebrow">All Records</div>
+            <h1>Applications</h1>
+            <p class="lede">Browse, search, and manage every application you've submitted.</p>
+          </div>
+          <a href="#" class="btn btn-primary" onclick="showView('add'); return false;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            New Application
+          </a>
+        </header>
+
+        <div class="table-wrap">
+          <div class="table-tools">
+            <div class="search">
+              <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke="currentColor" fill="none" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              <input type="search" placeholder="Search by company, role, location…" data-search />
+            </div>
+            <div style="font-size:.85rem; color:var(--muted)">5 records</div>
+          </div>
+
+          <table>
+            <thead>
+              <tr><th>Company</th><th>Role</th><th>Location</th><th>Applied</th><th>Status</th><th style="text-align:right">Actions</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="company">Anthropic</td><td>Software Engineering Intern</td><td class="muted">San Francisco, CA</td><td class="muted">2026-04-12</td><td><span class="pill pill-interview">Interview Scheduled</span></td>
+                <td style="text-align:right"><div class="btn-group">
+                  <a href="#" class="btn btn-ghost btn-icon" onclick="showView('edit'); return false;"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="m13.5 6.5 4 4"/></svg></a>
+                  <button class="btn btn-danger btn-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/></svg></button>
+                </div></td></tr>
+              <tr><td class="company">Stripe</td><td>Product Design Intern</td><td class="muted">Remote</td><td class="muted">2026-04-08</td><td><span class="pill pill-review">Under Review</span></td>
+                <td style="text-align:right"><div class="btn-group">
+                  <a href="#" class="btn btn-ghost btn-icon" onclick="showView('edit'); return false;"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="m13.5 6.5 4 4"/></svg></a>
+                  <button class="btn btn-danger btn-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/></svg></button>
+                </div></td></tr>
+              <tr><td class="company">Figma</td><td>Data Analyst Intern</td><td class="muted">New York, NY</td><td class="muted">2026-04-05</td><td><span class="pill pill-applied">Applied</span></td>
+                <td style="text-align:right"><div class="btn-group">
+                  <a href="#" class="btn btn-ghost btn-icon" onclick="showView('edit'); return false;"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="m13.5 6.5 4 4"/></svg></a>
+                  <button class="btn btn-danger btn-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/></svg></button>
+                </div></td></tr>
+              <tr><td class="company">Notion</td><td>UX Research Intern</td><td class="muted">Remote</td><td class="muted">2026-03-28</td><td><span class="pill pill-offer">Offer Extended</span></td>
+                <td style="text-align:right"><div class="btn-group">
+                  <a href="#" class="btn btn-ghost btn-icon" onclick="showView('edit'); return false;"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="m13.5 6.5 4 4"/></svg></a>
+                  <button class="btn btn-danger btn-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/></svg></button>
+                </div></td></tr>
+              <tr><td class="company">Linear</td><td>Software Engineer Intern</td><td class="muted">Boston, MA</td><td class="muted">2026-03-22</td><td><span class="pill pill-rejected">Rejected</span></td>
+                <td style="text-align:right"><div class="btn-group">
+                  <a href="#" class="btn btn-ghost btn-icon" onclick="showView('edit'); return false;"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="m13.5 6.5 4 4"/></svg></a>
+                  <button class="btn btn-danger btn-icon"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/></svg></button>
+                </div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============== ADD ============== -->
+      <section class="view" data-view="add">
+        <header class="page-head">
+          <div>
+            <div class="eyebrow">Add Record</div>
+            <h1>New Application</h1>
+            <p class="lede">Capture the details now — you can update the status as the process moves along.</p>
+          </div>
+        </header>
+
+        <form class="form-card" onsubmit="event.preventDefault(); showView('applications');">
+          <div class="form-grid">
+            <div class="field"><label for="c">Company</label><input id="c" type="text" placeholder="e.g. Anthropic" /></div>
+            <div class="field"><label for="r">Role</label><input id="r" type="text" placeholder="Software Engineering Intern" /></div>
+            <div class="field"><label for="l">Location</label><input id="l" type="text" placeholder="San Francisco, CA / Remote" /></div>
+            <div class="field"><label for="d">Date Applied</label><input id="d" type="date" /></div>
+            <div class="field full"><label for="s">Status</label>
+              <select id="s">
+                <option>Applied</option><option>Under Review</option><option>Interview Scheduled</option>
+                <option>Rejected</option><option>Offer Extended</option><option>Offer Accepted</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-actions">
+            <a href="#" class="btn btn-ghost" onclick="showView('applications'); return false;">Cancel</a>
+            <button type="submit" class="btn btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+              Save Application
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============== EDIT ============== -->
+      <section class="view" data-view="edit">
+        <header class="page-head">
+          <div>
+            <div class="eyebrow">Update Record</div>
+            <h1>Edit Application</h1>
+            <p class="lede">Refine the details or update the status as your process evolves.</p>
+          </div>
+        </header>
+
+        <form class="form-card" onsubmit="event.preventDefault(); showView('applications');">
+          <div class="form-grid">
+            <div class="field"><label for="ec">Company</label><input id="ec" type="text" value="Anthropic" /></div>
+            <div class="field"><label for="er">Role</label><input id="er" type="text" value="Software Engineering Intern" /></div>
+            <div class="field"><label for="el">Location</label><input id="el" type="text" value="San Francisco, CA" /></div>
+            <div class="field"><label for="ed">Date Applied</label><input id="ed" type="date" value="2026-04-12" /></div>
+            <div class="field full"><label for="es">Status</label>
+              <select id="es">
+                <option>Applied</option><option>Under Review</option>
+                <option selected>Interview Scheduled</option>
+                <option>Rejected</option><option>Offer Extended</option><option>Offer Accepted</option>
+              </select>
+            </div>
+          </div>
+          <div class="field-actions">
+            <a href="#" class="btn btn-ghost" onclick="showView('applications'); return false;">Cancel</a>
+            <button type="submit" class="btn btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+              Save Changes
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ============== STATISTICS ============== -->
+      <section class="view" data-view="stats">
+        <header class="page-head">
+          <div>
+            <div class="eyebrow">Insights</div>
+            <h1>Statistics</h1>
+            <p class="lede">A quiet look at the numbers behind your search.</p>
+          </div>
+        </header>
+
+        <section class="stat-grid">
+          <div class="stat"><div class="label">Total</div><div class="value" data-count="42">0</div><div class="delta">Applications submitted</div></div>
+          <div class="stat"><div class="label">Response Rate</div><div class="value" data-count="38" data-suffix="%">0%</div><div class="delta">Companies that replied</div></div>
+          <div class="stat"><div class="label">Success Rate</div><div class="value" data-count="7" data-suffix="%">0%</div><div class="delta">Offers received</div></div>
+          <div class="stat"><div class="label">Rejection Rate</div><div class="value" data-count="24" data-suffix="%">0%</div><div class="delta">Of total applications</div></div>
+        </section>
+
+        <section class="cols">
+          <div class="card">
+            <h2 style="font-size:1.2rem">By Status</h2>
+            <div class="bars" style="margin-top:18px">
+              <div class="bar-row"><div class="name">Applied</div><div class="bar-track"><div class="bar-fill" data-width="40"></div></div><div class="count">17</div></div>
+              <div class="bar-row"><div class="name">Under Review</div><div class="bar-track"><div class="bar-fill" data-width="22"></div></div><div class="count">9</div></div>
+              <div class="bar-row"><div class="name">Interview Scheduled</div><div class="bar-track"><div class="bar-fill" data-width="14"></div></div><div class="count">6</div></div>
+              <div class="bar-row"><div class="name">Offer Extended</div><div class="bar-track"><div class="bar-fill" data-width="5"></div></div><div class="count">2</div></div>
+              <div class="bar-row"><div class="name">Offer Accepted</div><div class="bar-track"><div class="bar-fill" data-width="2"></div></div><div class="count">1</div></div>
+              <div class="bar-row"><div class="name">Rejected</div><div class="bar-track"><div class="bar-fill" data-width="17"></div></div><div class="count">7</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <h2 style="font-size:1.2rem">By Location</h2>
+            <div class="bars" style="margin-top:18px">
+              <div class="bar-row"><div class="name">Remote</div><div class="bar-track"><div class="bar-fill" data-width="100"></div></div><div class="count">14</div></div>
+              <div class="bar-row"><div class="name">San Francisco, CA</div><div class="bar-track"><div class="bar-fill" data-width="64"></div></div><div class="count">9</div></div>
+              <div class="bar-row"><div class="name">New York, NY</div><div class="bar-track"><div class="bar-fill" data-width="50"></div></div><div class="count">7</div></div>
+              <div class="bar-row"><div class="name">Boston, MA</div><div class="bar-track"><div class="bar-fill" data-width="36"></div></div><div class="count">5</div></div>
+              <div class="bar-row"><div class="name">Seattle, WA</div><div class="bar-track"><div class="bar-fill" data-width="29"></div></div><div class="count">4</div></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="card" style="margin-top:22px">
+          <h2 style="font-size:1.2rem">A Note on Your Numbers</h2>
+          <p style="color:var(--ink-soft); max-width:62ch">
+            Job hunting is a slow craft. A single offer can outweigh dozens of quiet rejections,
+            and the rate of response is often more about season and signal than skill.
+            Keep going — the data is just a mirror, not a verdict.
+          </p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script>
+    // SPA-ish view switching for the preview only
+    function animateCounters() {
+      document.querySelectorAll('.view.active [data-count]').forEach(el => {
+        const target = parseFloat(el.dataset.count);
+        const isPercent = el.dataset.suffix === '%';
+        const decimals = (target % 1 !== 0) ? 1 : 0;
+        const duration = 900;
+        const start = performance.now();
+        const ease = t => 1 - Math.pow(1 - t, 3);
+        function tick(now) {
+          const p = Math.min(1, (now - start) / duration);
+          const v = target * ease(p);
+          el.textContent = v.toFixed(decimals) + (isPercent ? '%' : '');
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
+    }
+    function animateBars() {
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.view.active .bar-fill').forEach(el => {
+          el.style.width = '0%';
+          requestAnimationFrame(() => { el.style.width = (el.dataset.width || 0) + '%'; });
+        });
+      });
+    }
+    function showView(name) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('#sidenav a').forEach(a => a.classList.remove('active'));
+      const target = document.querySelector(`.view[data-view="${name}"]`);
+      const navItem = document.querySelector(`#sidenav a[data-view="${name}"]`);
+      if (target) {
+        target.classList.add('active');
+        target.style.animation = 'none';
+        // force reflow
+        void target.offsetWidth;
+        target.style.animation = 'fadeUp .55s var(--ease-out) both';
+      }
+      if (navItem) navItem.classList.add('active');
+      animateCounters();
+      animateBars();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    document.querySelectorAll('#sidenav a').forEach(a => {
+      a.addEventListener('click', (e) => {
+        e.preventDefault();
+        showView(a.dataset.view);
+      });
+    });
+    // table search
+    document.querySelector('[data-search]')?.addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      document.querySelectorAll('tbody tr').forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    });
+    // initial pass
+    animateCounters();
+    animateBars();
+  </script>
+</body>
+</html>

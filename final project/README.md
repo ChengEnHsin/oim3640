@@ -189,3 +189,131 @@ This project demonstrates:
 - **Modularity**: Reusable code across interfaces
 - **Responsive Design**: Mobile-friendly web layouts
 - **User Experience**: Building intuitive interfaces
+
+# InternTrack — UI Design Drop-in
+
+A simplistic, cream-and-neutral redesign for the InternTrack Flask app, with subtle animation transitions throughout. Templates are wired to match `web_app.py` exactly.
+
+## What's inside
+
+```
+interntrack-ui/
+├── preview.html              ← open this directly in a browser to see the design
+├── static/
+│   └── style.css             ← drop into your project's static/ folder
+└── templates/
+    ├── base.html             ← layout + nav + scripts
+    ├── index.html            ← Dashboard
+    ├── applications.html     ← All applications table
+    ├── add_application.html  ← New application form
+    ├── edit_application.html ← Edit application form
+    └── statistics.html       ← Statistics page
+```
+
+## Preview
+
+Open `preview.html` in your browser — no Flask required. The sidebar links switch between all five views and demo the animations.
+
+## Drop-in to your Flask app
+
+1. Copy `static/style.css` → your `static/` folder (replace existing).
+2. Copy everything in `templates/` → your `templates/` folder (replace existing).
+
+That's it — no changes needed in `web_app.py`. The templates use the exact endpoint names and context variables your routes pass.
+
+## Endpoints used
+
+| Template | Endpoint | Method |
+|---|---|---|
+| `base.html` (nav) | `index`, `view_applications`, `add_application`, `statistics` | GET |
+| `index.html` | `view_applications`, `add_application` | GET |
+| `applications.html` | `add_application`, `edit_application(app_id)`, `delete_application(app_id)` | GET / POST |
+| `add_application.html` | `add_application`, `view_applications` | POST / GET |
+| `edit_application.html` | `edit_application(app_id)`, `view_applications` | POST / GET |
+| `statistics.html` | (read-only) | GET |
+
+## Context variables (matched to web_app.py)
+
+### `index.html` — `index()` route
+```python
+render_template('index.html',
+    stats=stats,                  # dict — see shape below
+    applications=applications,    # list[dict] (each w/ status_color)
+    suggested=suggested,          # list[{company, role, location, season}]
+    reminders=reminders,          # list[{company, role, date, location}]
+    status_colors=status_colors,  # dict {status: hex}
+)
+```
+
+### `applications.html` — `view_applications()` route
+```python
+render_template('applications.html', applications=apps_with_colors)
+```
+
+### `add_application.html` — `add_application()` route
+```python
+render_template('add_application.html',
+    statuses=VALID_STATUSES,      # list[str]
+    error=...,                    # optional, str
+)
+```
+
+### `edit_application.html` — `edit_application()` route
+```python
+render_template('edit_application.html',
+    application=app_to_edit,      # dict
+    statuses=VALID_STATUSES,
+)
+```
+
+### `statistics.html` — `statistics()` route
+```python
+render_template('statistics.html',
+    stats=stats,
+    status_colors=status_colors,
+    applications=applications,
+)
+```
+
+### `stats` dict shape (from `calculate_statistics`)
+```python
+{
+    "total":          int,
+    "response_rate":  float,   # 0–100
+    "rejection_rate": float,
+    "responded":      int,
+    "rejections":     int,
+    "by_status":      {status_name: count},
+    "by_location":    {location_name: count},
+}
+```
+
+The dashboard derives `active_count` (interviews + offers) from `stats.by_status` and the `recent` list from `applications` sorted by `date_applied` — no extra context needed. The statistics page derives a `success_rate` (offers / total) the same way.
+
+## Design system
+
+| Token | Value | Use |
+|---|---|---|
+| `--bg` | `#f7f2ea` | warm cream page background |
+| `--surface` | `#fdfbf6` | cards, table, forms |
+| `--accent` | `#a89478` | warm taupe — bars, focus rings |
+| `--accent-deep` | `#6b5d4a` | primary buttons, headings emphasis |
+| `--ink` | `#2d2922` | primary text |
+| Status pills | muted earth-tones | `pill-applied`, `pill-review`, `pill-interview`, `pill-rejected`, `pill-offer`, `pill-accepted` |
+
+Headings use **Fraunces** (serif), body uses **Inter** (sans). Both load from Google Fonts with `display=swap`.
+
+The CSS pill classes use a hand-tuned muted palette that fits the cream theme. If you'd rather use the bright `status_colors` from `get_status_color()`, swap the `<span class="pill ...">` for an inline-styled badge — but the current muted set looks much calmer.
+
+## Animations
+
+- **Page entrance**: each view fades up in 550ms on load.
+- **Stat cards**: rise + stagger (50ms steps).
+- **Table rows**: fade in with stagger.
+- **Stat numbers**: count up from 0 to target with cubic ease-out.
+- **Bar charts**: fill widths animate in over 1s.
+- **Hover lifts** on cards and primary buttons.
+- **Focus rings** with soft taupe glow on inputs.
+- **Brand dot**: gentle pulse.
+- **Active nav indicator**: slide-in left bar.
+- Respects `prefers-reduced-motion`.

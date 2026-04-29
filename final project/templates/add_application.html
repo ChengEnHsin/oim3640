@@ -1,44 +1,70 @@
 {% extends "base.html" %}
-
-{% block title %}Add Application - InternTrack{% endblock %}
+{% block title %}New Application · InternTrack{% endblock %}
 
 {% block content %}
-<div class="form-page">
-    <h1>Add New Application</h1>
-    <p class="subtitle">Track your internship application</p>
+{# expects: statuses -> list[str], optional error -> str #}
 
-    {% if error %}
-        <div class="alert alert-error">{{ error }}</div>
-    {% endif %}
+<header class="page-head">
+  <div>
+    <div class="eyebrow">Add Record</div>
+    <h1>New Application</h1>
+    <p class="lede">Capture the details now — you can update the status as the process moves along.</p>
+  </div>
+</header>
 
-    <div class="form-container">
-        <form method="POST" class="form">
-            <div class="form-group">
-                <label for="company">Company Name *</label>
-                <input type="text" id="company" name="company" required placeholder="e.g., Google, Microsoft">
-            </div>
+{% if error %}
+  <div class="form-card" style="max-width:640px; margin:0 auto 18px; border-color:#e3cac3; border-left:3px solid #8a4d40; padding:14px 18px;">
+    <strong style="color:#6e3a2e">Heads up —</strong>
+    <span style="color:var(--ink-soft)">{{ error }}</span>
+  </div>
+{% endif %}
 
-            <div class="form-group">
-                <label for="role">Job Role/Position *</label>
-                <input type="text" id="role" name="role" required placeholder="e.g., Software Engineer Intern">
-            </div>
-
-            <div class="form-group">
-                <label for="location">Location</label>
-                <input type="text" id="location" name="location" placeholder="e.g., Mountain View, CA or Remote">
-            </div>
-
-            <div class="form-group">
-                <label for="date_applied">Date Applied</label>
-                <input type="date" id="date_applied" name="date_applied">
-                <small>Leave blank for today's date</small>
-            </div>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Add Application</button>
-                <a href="{{ url_for('view_applications') }}" class="btn btn-secondary">Cancel</a>
-            </div>
-        </form>
+<form class="form-card" method="POST" action="{{ url_for('add_application') }}">
+  <div class="form-grid">
+    <div class="field">
+      <label for="company">Company</label>
+      <input id="company" name="company" type="text" required placeholder="e.g. Anthropic" autofocus />
     </div>
-</div>
+    <div class="field">
+      <label for="role">Role</label>
+      <input id="role" name="role" type="text" required placeholder="Software Engineering Intern" />
+    </div>
+
+    <div class="field">
+      <label for="location">Location</label>
+      <input id="location" name="location" type="text" placeholder="San Francisco, CA / Remote" />
+    </div>
+    <div class="field">
+      <label for="date_applied">Date Applied</label>
+      <input id="date_applied" name="date_applied" type="date" />
+    </div>
+
+    <div class="field full">
+      <label for="status">Status</label>
+      <select id="status" name="status">
+        {% for s in (statuses or ['Applied','Under Review','Interview Scheduled','Rejected','Offer Extended','Offer Accepted']) %}
+          <option value="{{ s }}" {% if s == 'Applied' %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <div class="field-actions">
+    <a href="{{ url_for('view_applications') }}" class="btn btn-ghost">Cancel</a>
+    <button type="submit" class="btn btn-primary">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 13l4 4L19 7"/>
+      </svg>
+      Save Application
+    </button>
+  </div>
+</form>
+{% endblock %}
+24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 13l4 4L19 7"/>
+      </svg>
+      Save Application
+    </button>
+  </div>
+</form>
 {% endblock %}

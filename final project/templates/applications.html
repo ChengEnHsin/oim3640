@@ -1,54 +1,104 @@
 {% extends "base.html" %}
-
-{% block title %}Applications - InternTrack{% endblock %}
+{% block title %}Applications · InternTrack{% endblock %}
 
 {% block content %}
-<div class="applications-page">
-    <div class="page-header">
-        <h1>All Applications</h1>
-        <a href="{{ url_for('add_application') }}" class="btn btn-primary">+ Add New Application</a>
-    </div>
+{# expects: applications -> list[dict] with id, company, role, date_applied, location,
+            status, date_updated, status_color #}
 
-    {% if applications %}
-        <div class="table-container">
-            <table class="applications-table">
-                <thead>
-                    <tr>
-                        <th>Company</th>
-                        <th>Role</th>
-                        <th>Location</th>
-                        <th>Date Applied</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for app in applications %}
-                        <tr>
-                            <td class="company-cell">{{ app.company }}</td>
-                            <td>{{ app.role }}</td>
-                            <td>{{ app.location }}</td>
-                            <td>{{ app.date_applied }}</td>
-                            <td>
-                                <span class="badge" style="background-color: {{ app.status_color }};">{{ app.status }}</span>
-                            </td>
-                            <td class="action-cell">
-                                <a href="{{ url_for('edit_application', app_id=app.id) }}" class="btn btn-small btn-edit">Edit</a>
-                                <form method="POST" action="{{ url_for('delete_application', app_id=app.id) }}" class="inline-form">
-                                    <button type="submit" class="btn btn-small btn-delete" onclick="return confirm('Delete {{ app.company }} - {{ app.role }}?');">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% else %}
-        <div class="empty-state">
-            <h2>No applications yet</h2>
-            <p>Start tracking your internship applications by adding your first one.</p>
-            <a href="{{ url_for('add_application') }}" class="btn btn-primary">Add Your First Application</a>
-        </div>
-    {% endif %}
+<header class="page-head">
+  <div>
+    <div class="eyebrow">All Records</div>
+    <h1>Applications</h1>
+    <p class="lede">Browse, search, and manage every application you've submitted.</p>
+  </div>
+  <a href="{{ url_for('add_application') }}" class="btn btn-primary">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    New Application
+  </a>
+</header>
+
+<div class="table-wrap">
+  <div class="table-tools">
+    <div class="search">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" placeholder="Search by company, role, location…" data-search />
+    </div>
+    <div class="muted" style="font-size:.85rem; color:var(--muted)">
+      {{ applications|length if applications else 0 }} record{% if (applications|length if applications else 0) != 1 %}s{% endif %}
+    </div>
+  </div>
+
+  {% if applications and applications|length > 0 %}
+    <table>
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Role</th>
+          <th>Location</th>
+          <th>Applied</th>
+          <th>Status</th>
+          <th style="text-align:right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for app in applications %}
+          <tr>
+            <td class="company">{{ app.company }}</td>
+            <td>{{ app.role }}</td>
+            <td class="muted">{{ app.location }}</td>
+            <td class="muted">{{ app.date_applied }}</td>
+            <td>
+              {% set s = app.status %}
+              <span class="pill
+                {% if s == 'Applied' %}pill-applied
+                {% elif s == 'Under Review' %}pill-review
+                {% elif s == 'Interview Scheduled' %}pill-interview
+                {% elif s == 'Rejected' %}pill-rejected
+                {% elif s == 'Offer Extended' %}pill-offer
+                {% elif s == 'Offer Accepted' %}pill-accepted
+                {% endif %}">{{ s }}</span>
+            </td>
+            <td style="text-align:right">
+              <div class="btn-group">
+                <a href="{{ url_for('edit_application', app_id=app.id) }}" class="btn btn-ghost btn-icon" title="Edit">
+                  <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 20h4l10-10-4-4L4 16v4z"/>
+                    <path d="m13.5 6.5 4 4"/>
+                  </svg>
+                </a>
+                <form method="POST" action="{{ url_for('delete_application', app_id=app.id) }}"
+                      style="display:inline" data-confirm="Delete this application?">
+                  <button type="submit" class="btn btn-danger btn-icon" title="Delete">
+                    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 7h16"/>
+                      <path d="M9 7V4h6v3"/>
+                      <path d="M6 7l1 13h10l1-13"/>
+                    </svg>
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <div class="empty">
+      <div class="icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a89478" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+          <path d="M14 3v6h6"/>
+        </svg>
+      </div>
+      <h3>Nothing here yet</h3>
+      <p>Once you add an application it will appear in this list.</p>
+      <a href="{{ url_for('add_application') }}" class="btn btn-primary" style="margin-top:8px">Add application</a>
+    </div>
+  {% endif %}
 </div>
+
+{% endblock %}
+%}
+</div>
+
 {% endblock %}

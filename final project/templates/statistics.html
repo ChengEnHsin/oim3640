@@ -1,100 +1,111 @@
 {% extends "base.html" %}
-
-{% block title %}Statistics - InternTrack{% endblock %}
+{% block title %}Statistics · InternTrack{% endblock %}
 
 {% block content %}
-<div class="statistics-page">
-    <h1>Application Statistics</h1>
-    <p class="subtitle">Analyze your recruiting journey</p>
+{# ---------- Context from web_app.py ----------
+   stats          : { total, response_rate, rejection_rate, responded, rejections,
+                      by_status: {name: count}, by_location: {name: count} }
+   status_colors  : { status_name: hex }
+   applications   : list[dict]
+------------------------------------------------ #}
 
-    <div class="stats-grid">
-        <div class="stat-card large">
-            <h3>Total Applications</h3>
-            <p class="stat-value">{{ stats.total }}</p>
-        </div>
+{% set total          = stats.total          if stats else 0 %}
+{% set response_rate  = stats.response_rate  if stats else 0 %}
+{% set rejection_rate = stats.rejection_rate if stats else 0 %}
+{% set by_status      = stats.by_status      if stats else {} %}
+{% set by_location    = stats.by_location    if stats else {} %}
 
-        <div class="stat-card large">
-            <h3>Response Rate</h3>
-            <p class="stat-value">{{ stats.response_rate }}%</p>
-            <p class="stat-detail">{{ stats.responded }} out of {{ stats.total }} responded</p>
-        </div>
+{# Success rate: offers (extended + accepted) / total #}
+{% set offers_total   = by_status.get('Offer Extended', 0) + by_status.get('Offer Accepted', 0) %}
+{% set success_rate   = ((offers_total / total) * 100) if total > 0 else 0 %}
 
-        <div class="stat-card large">
-            <h3>Rejection Rate</h3>
-            <p class="stat-value">{{ stats.rejection_rate }}%</p>
-            <p class="stat-detail">{{ stats.rejections }} rejections</p>
-        </div>
+<header class="page-head">
+  <div>
+    <div class="eyebrow">Insights</div>
+    <h1>Statistics</h1>
+    <p class="lede">A quiet look at the numbers behind your search.</p>
+  </div>
+</header>
 
-        <div class="stat-card large">
-            <h3>Success Rate</h3>
-            <p class="stat-value">{{ (((stats.by_status.get('Offer Extended', 0) + stats.by_status.get('Offer Accepted', 0)) / stats.total * 100) if stats.total > 0 else 0)|round(1) }}%</p>
-            <p class="stat-detail">{{ stats.by_status.get('Offer Extended', 0) + stats.by_status.get('Offer Accepted', 0) }} offers</p>
+<!-- Top stats -->
+<section class="stat-grid">
+  <div class="stat">
+    <div class="label">Total</div>
+    <div class="value" data-count="{{ total }}">0</div>
+    <div class="delta">Applications submitted</div>
+  </div>
+  <div class="stat">
+    <div class="label">Response Rate</div>
+    <div class="value" data-count="{{ response_rate }}" data-suffix="%">0%</div>
+    <div class="delta">{{ stats.responded if stats else 0 }} companies replied</div>
+  </div>
+  <div class="stat">
+    <div class="label">Success Rate</div>
+    <div class="value" data-count="{{ success_rate|round(1) }}" data-suffix="%">0%</div>
+    <div class="delta">{{ offers_total }} offer{% if offers_total != 1 %}s{% endif %} received</div>
+  </div>
+  <div class="stat">
+    <div class="label">Rejection Rate</div>
+    <div class="value" data-count="{{ rejection_rate }}" data-suffix="%">0%</div>
+    <div class="delta">{{ stats.rejections if stats else 0 }} rejection{% if (stats.rejections if stats else 0) != 1 %}s{% endif %}</div>
+  </div>
+</section>
+
+<section class="cols">
+  <!-- Status breakdown bars -->
+  <div class="card">
+    <h2 style="font-size:1.2rem">By Status</h2>
+    {% set buckets = [
+      ('Applied',             by_status.get('Applied', 0)),
+      ('Under Review',        by_status.get('Under Review', 0)),
+      ('Interview Scheduled', by_status.get('Interview Scheduled', 0)),
+      ('Offer Extended',      by_status.get('Offer Extended', 0)),
+      ('Offer Accepted',      by_status.get('Offer Accepted', 0)),
+      ('Rejected',            by_status.get('Rejected', 0))
+    ] %}
+    <div class="bars" style="margin-top:18px">
+      {% for name, count in buckets %}
+        {% set pct = ((count / total) * 100) if total > 0 else 0 %}
+        <div class="bar-row">
+          <div class="name">{{ name }}</div>
+          <div class="bar-track"><div class="bar-fill" data-width="{{ pct|round(0) }}"></div></div>
+          <div class="count">{{ count }}</div>
         </div>
+      {% endfor %}
     </div>
+  </div>
 
-    <div class="stats-section">
-        <h2>Status Breakdown</h2>
-        <div class="chart-container">
-            <div class="status-breakdown">
-                {% for status, count in stats.by_status.items() %}
-                    <div class="status-item">
-                        <div class="status-label-wrapper">
-                            <span class="status-label">{{ status }}</span>
-                        </div>
-                        <div class="status-bar-container">
-                            <div class="status-bar" style="width: {{ (count / stats.total * 100) if stats.total > 0 else 0 }}%; background-color: {{ status_colors.get(status, '#95a5a6') }}"></div>
-                        </div>
-                        <span class="status-count">{{ count }}</span>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+  <!-- Locations -->
+  <div class="card">
+    <h2 style="font-size:1.2rem">By Location</h2>
+    {% if by_location and by_location|length > 0 %}
+      {% set max_loc = (by_location.values()|list|max) %}
+      <div class="bars" style="margin-top:18px">
+        {% for loc, cnt in by_location.items() %}
+          {% set pct = (cnt / max_loc) * 100 if max_loc > 0 else 0 %}
+          <div class="bar-row">
+            <div class="name" title="{{ loc }}">{{ loc }}</div>
+            <div class="bar-track"><div class="bar-fill" data-width="{{ pct|round(0) }}"></div></div>
+            <div class="count">{{ cnt }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty" style="padding:30px 10px">
+        <p style="margin:0">No location data yet.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
 
-    <div class="stats-section">
-        <h2>Applications by Location</h2>
-        {% if stats.by_location %}
-            <div class="location-breakdown">
-                {% for location, count in stats.by_location.items()|sort %}
-                    <div class="location-item">
-                        <span class="location-name">{{ location }}</span>
-                        <div class="location-bar">
-                            <div class="location-fill" style="width: {{ (count / stats.total * 100) if stats.total > 0 else 0 }}%"></div>
-                        </div>
-                        <span class="location-count">{{ count }}</span>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p class="empty-message">No location data available</p>
-        {% endif %}
-    </div>
-
-    <div class="stats-section">
-        <h2>Key Insights</h2>
-        <div class="insights">
-            <div class="insight-card">
-                <h4>📈 Key Metric</h4>
-                {% if stats.total == 0 %}
-                    <p>Add your first application to start tracking!</p>
-                {% else %}
-                    <p>You have a <strong>{{ stats.response_rate }}%</strong> response rate across <strong>{{ stats.total }}</strong> applications.</p>
-                {% endif %}
-            </div>
-
-            <div class="insight-card">
-                <h4>🎯 Next Step</h4>
-                {% if stats.by_status.get('Offer Extended', 0) > 0 %}
-                    <p>You have <strong>{{ stats.by_status.get('Offer Extended', 0) }}</strong> offers extended! Start evaluating them.</p>
-                {% elif stats.by_status.get('Interview Scheduled', 0) > 0 %}
-                    <p>You have <strong>{{ stats.by_status.get('Interview Scheduled', 0) }}</strong> interviews scheduled. Prepare well!</p>
-                {% elif stats.by_status.get('Under Review', 0) > 0 %}
-                    <p>You have <strong>{{ stats.by_status.get('Under Review', 0) }}</strong> applications under review. Follow up soon!</p>
-                {% else %}
-                    <p>Keep applying! Your next interview might be just around the corner.</p>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+<!-- Insight card -->
+<div class="card" style="margin-top:22px">
+  <h2 style="font-size:1.2rem">A Note on Your Numbers</h2>
+  <p style="color:var(--ink-soft); max-width:62ch">
+    Job hunting is a slow craft. A single offer can outweigh dozens of quiet rejections,
+    and the rate of response is often more about season and signal than skill.
+    Keep going — the data is just a mirror, not a verdict.
+  </p>
 </div>
+
 {% endblock %}

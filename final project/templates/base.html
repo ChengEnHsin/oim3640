@@ -1,71 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InternTrack</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}InternTrack{% endblock %}</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,450;9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-brand">
-                <a href="{{ url_for('index') }}" class="logo">📋 InternTrack</a>
-            </div>
-            <ul class="navbar-menu">
-                <li><a href="{{ url_for('index') }}" class="nav-link">Dashboard</a></li>
-                <li><a href="{{ url_for('view_applications') }}" class="nav-link">Applications</a></li>
-                <li><a href="{{ url_for('add_application') }}" class="nav-link">+ Add</a></li>
-                <li><a href="{{ url_for('statistics') }}" class="nav-link">Statistics</a></li>
-            </ul>
-        </div>
-    </nav>
+  <div class="app">
 
-    <main class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+    <!-- ============== Sidebar ============== -->
+    <aside class="sidebar">
+      <a href="{{ url_for('index') }}" class="brand" style="color:inherit">
+        <span class="brand-dot"></span>
+        <span>
+          InternTrack
+          <small>Application Tracker</small>
+        </span>
+      </a>
 
-        {% block content %}{% endblock %}
+      <nav class="nav">
+        <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M3 12L12 4l9 8"/><path d="M5 10v10h14V10"/></svg>
+          Dashboard
+        </a>
+        <a href="{{ url_for('view_applications') }}" class="{% if request.endpoint == 'view_applications' %}active{% endif %}">
+          <svg class="icon" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
+          Applications
+        </a>
+        <a href="{{ url_for('add_application') }}" class="{% if request.endpoint == 'add_application' %}active{% endif %}">
+          <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+          New Application
+        </a>
+        <a href="{{ url_for('statistics') }}" class="{% if request.endpoint == 'statistics' %}active{% endif %}">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+          Statistics
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        Built for OIM 3640<br/>
+        &copy; {{ year or '2026' }} InternTrack
+      </div>
+    </aside>
+
+    <!-- ============== Main ============== -->
+    <main class="main">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          {% for msg in messages %}
+            <div class="flash">{{ msg }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
     </main>
+  </div>
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 InternTrack - Centralized Internship Tracker by Chloe Hsin</p>
-        </div>
-    </footer>
+  <script>
+    // Stat counter animation — counts numeric values from 0 to target on load
+    document.addEventListener('DOMContentLoaded', () => {
+      const counters = document.querySelectorAll('[data-count]');
+      counters.forEach(el => {
+        const target = parseFloat(el.dataset.count);
+        const isPercent = el.dataset.suffix === '%';
+        const decimals = (target % 1 !== 0) ? 1 : 0;
+        const duration = 900;
+        const start = performance.now();
+        const ease = t => 1 - Math.pow(1 - t, 3);
+        function tick(now) {
+          const p = Math.min(1, (now - start) / duration);
+          const v = target * ease(p);
+          el.textContent = v.toFixed(decimals) + (isPercent ? '%' : '');
+          if (p < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      });
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const page = document.querySelector('main.container');
-            if (!page) return;
-            page.classList.remove('page-enter');
-
-            const internalLinks = Array.from(document.querySelectorAll('a[href]'))
-                .filter(link => {
-                    const href = link.getAttribute('href');
-                    return href && !href.startsWith('#') && !href.startsWith('javascript:') && link.target !== '_blank';
-                });
-
-            internalLinks.forEach(link => {
-                const url = new URL(link.href, window.location.href);
-                if (url.origin !== window.location.origin) return;
-
-                link.addEventListener('click', event => {
-                    const href = link.getAttribute('href');
-                    if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
-                    event.preventDefault();
-                    page.classList.add('page-exit');
-                    setTimeout(() => {
-                        window.location.href = href;
-                    }, 250);
-                });
-            });
+      // Fill bar charts after mount
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.bar-fill').forEach(el => {
+          const w = el.dataset.width || '0';
+          el.style.width = w + '%';
         });
-    </script>
+      });
+
+      // Live table search
+      const searchInput = document.querySelector('[data-search]');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          const q = e.target.value.toLowerCase().trim();
+          document.querySelectorAll('tbody tr').forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(q) ? '' : 'none';
+          });
+        });
+      }
+
+      // Confirm before delete
+      document.querySelectorAll('[data-confirm]').forEach(form => {
+        form.addEventListener('submit', (e) => {
+          if (!confirm(form.dataset.confirm)) e.preventDefault();
+        });
+      });
+    });
+  </script>
 </body>
 </html>

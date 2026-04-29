@@ -1,183 +1,202 @@
 {% extends "base.html" %}
-
-{% block title %}Dashboard - InternTrack{% endblock %}
+{% block title %}Dashboard · InternTrack{% endblock %}
 
 {% block content %}
-<div class="dashboard">
-    <section class="hero-panel">
-        <div class="hero-copy">
-            <span class="hero-label">Your internship search</span>
-            <h1>Reinvented</h1>
-            <p class="hero-text">Track opportunities, measure recruiting progress, and stay organized in one beautiful dashboard.</p>
-            <div class="hero-actions">
-                <a href="{{ url_for('add_application') }}" class="btn btn-primary btn-hero">Add Application</a>
-                <a href="{{ url_for('view_applications') }}" class="btn btn-secondary btn-hero">View Applications</a>
-            </div>
-        </div>
-        <div class="hero-cards">
-            <div class="hero-stat-card">
-                <span class="hero-stat-label">Total applications</span>
-                <strong>{{ stats.total }}</strong>
-            </div>
-            <div class="hero-stat-card">
-                <span class="hero-stat-label">In progress</span>
-                <strong>{{ stats.by_status.get('Under Review', 0) + stats.by_status.get('Interview Scheduled', 0) }}</strong>
-            </div>
-            <div class="hero-stat-card">
-                <span class="hero-stat-label">Active rate</span>
-                <strong>{{ stats.response_rate }}%</strong>
-            </div>
-            <div class="hero-stat-card">
-                <span class="hero-stat-label">Offers</span>
-                <strong>{{ stats.by_status.get('Offer Extended', 0) + stats.by_status.get('Offer Accepted', 0) }}</strong>
-            </div>
-        </div>
-    </section>
+{% set total = stats.total if stats else 0 %}
+{% set response_rate = stats.response_rate if stats else 0 %}
+{% set rejection_rate = stats.rejection_rate if stats else 0 %}
+{% set by_status = stats.by_status if stats else {} %}
+{% set active_count = by_status.get('Interview Scheduled', 0) + by_status.get('Offer Extended', 0) + by_status.get('Offer Accepted', 0) %}
+{% set recent = (applications|sort(attribute='date_applied', reverse=true))[:5] if applications else [] %}
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon">📊</div>
-            <div class="stat-content">
-                <h3>Total Applications</h3>
-                <p class="stat-value">{{ stats.total }}</p>
-            </div>
-        </div>
+<header class="page-head">
+  <div>
+    <div class="eyebrow">Overview</div>
+    <h1>Welcome back</h1>
+    <p class="lede">A calm, organized view of every internship and job application you're tracking.</p>
+  </div>
+  <a href="{{ url_for('add_application') }}" class="btn btn-primary">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    New Application
+  </a>
+</header>
 
-        <div class="stat-card">
-            <div class="stat-icon">✅</div>
-            <div class="stat-content">
-                <h3>Response Rate</h3>
-                <p class="stat-value">{{ stats.response_rate }}%</p>
-                <p class="stat-detail">({{ stats.responded }} responses)</p>
-            </div>
-        </div>
+<section class="stat-grid">
+  <div class="stat">
+    <div class="label">Total Applications</div>
+    <div class="value" data-count="{{ total }}">0</div>
+    <div class="delta">All time</div>
+  </div>
+  <div class="stat">
+    <div class="label">Response Rate</div>
+    <div class="value" data-count="{{ response_rate }}" data-suffix="%">0%</div>
+    <div class="delta">Heard back from</div>
+  </div>
+  <div class="stat">
+    <div class="label">Active Pipeline</div>
+    <div class="value" data-count="{{ active_count }}">0</div>
+    <div class="delta">Interviews &amp; offers</div>
+  </div>
+  <div class="stat">
+    <div class="label">Rejection Rate</div>
+    <div class="value" data-count="{{ rejection_rate }}" data-suffix="%">0%</div>
+    <div class="delta">Of total applications</div>
+  </div>
+</section>
 
-        <div class="stat-card">
-            <div class="stat-icon">❌</div>
-            <div class="stat-content">
-                <h3>Rejection Rate</h3>
-                <p class="stat-value">{{ stats.rejection_rate }}%</p>
-                <p class="stat-detail">({{ stats.rejections }} rejections)</p>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon">🎉</div>
-            <div class="stat-content">
-                <h3>Offers Extended</h3>
-                <p class="stat-value">{{ stats.by_status.get('Offer Extended', 0) }}</p>
-            </div>
-        </div>
+<section class="cols">
+  <div class="card">
+    <div class="section-head" style="margin-top:0">
+      <h2 style="font-size:1.2rem">Recent Activity</h2>
+      <a class="more" href="{{ url_for('view_applications') }}">View all →</a>
     </div>
 
-    <div class="dashboard-section">
-        <h2>Recent Applications</h2>
-        {% if applications %}
-            <div class="recent-apps">
-                {% for app in (applications|reverse|list)[:5] %}
-                    <div class="app-card">
-                        <div class="app-header">
-                            <h3>{{ app.company }}</h3>
-                            <span class="badge" style="background-color: {{ app.status_color if app.status_color is defined else '#95a5a6' }};">{{ app.status }}</span>
-                        </div>
-                        <p class="app-role">{{ app.role }}</p>
-                        <div class="app-meta">
-                            <span>📍 {{ app.location }}</span>
-                            <span>📅 {{ app.date_applied }}</span>
-                        </div>
-                        <div class="app-actions">
-                            <a href="{{ url_for('edit_application', app_id=app.id) }}" class="btn btn-small">Edit</a>
-                        </div>
-                    </div>
-                {% endfor %}
+    {% if recent and recent|length > 0 %}
+      <ul class="recent">
+        {% for app in recent %}
+          <li>
+            <div class="avatar">{{ app.company[:1]|upper }}</div>
+            <div class="meta">
+              <div class="role">{{ app.role }} · {{ app.company }}</div>
+              <div class="sub">{{ app.location }} — Applied {{ app.date_applied }}</div>
             </div>
-        {% else %}
-            <div class="empty-state">
-                <p>No applications yet. <a href="{{ url_for('add_application') }}">Add your first application</a></p>
+            {% set s = app.status %}
+            <span class="pill
+              {% if s == 'Applied' %}pill-applied
+              {% elif s == 'Under Review' %}pill-review
+              {% elif s == 'Interview Scheduled' %}pill-interview
+              {% elif s == 'Rejected' %}pill-rejected
+              {% elif s == 'Offer Extended' %}pill-offer
+              {% elif s == 'Offer Accepted' %}pill-accepted
+              {% endif %}">{{ s }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="empty">
+        <div class="icon-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a89478" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="5" width="16" height="15" rx="2"/>
+            <path d="M9 3v4M15 3v4M4 10h16"/>
+          </svg>
+        </div>
+        <h3>No applications yet</h3>
+        <p>Start tracking your first one — it takes about 20 seconds.</p>
+        <a href="{{ url_for('add_application') }}" class="btn btn-primary" style="margin-top:8px">Add your first</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <h2 style="font-size:1.2rem">Status Breakdown</h2>
+    {% set bucket_names = ['Applied', 'Under Review', 'Interview Scheduled', 'Offer Extended', 'Offer Accepted', 'Rejected'] %}
+    <div class="bars" style="margin-top:18px">
+      {% for name in bucket_names %}
+        {% set count = by_status.get(name, 0) %}
+        {% set pct = ((count / total) * 100) if total > 0 else 0 %}
+        <div class="bar-row">
+          <div class="name">{{ name }}</div>
+          <div class="bar-track"><div class="bar-fill" data-width="{{ pct|round(0) }}"></div></div>
+          <div class="count">{{ count }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="cols" style="margin-top:22px">
+  <div class="card">
+    <div class="section-head" style="margin-top:0">
+      <h2 style="font-size:1.2rem">Upcoming Interviews</h2>
+      <span class="more">{{ reminders|length if reminders else 0 }} scheduled</span>
+    </div>
+
+    {% if reminders and reminders|length > 0 %}
+      <ul class="recent">
+        {% for r in reminders %}
+          <li>
+            <div class="avatar">{{ r.company[:1]|upper }}</div>
+            <div class="meta">
+              <div class="role">{{ r.role }} · {{ r.company }}</div>
+              <div class="sub">{{ r.location }} — Updated {{ r.date }}</div>
             </div>
-        {% endif %}
+            <span class="pill pill-interview">Interview</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="empty" style="padding:36px 10px">
+        <p style="margin:0">No upcoming interviews scheduled.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <div class="section-head" style="margin-top:0">
+      <h2 style="font-size:1.2rem">Suggested Internships</h2>
+      <span class="more">Curated picks</span>
     </div>
 
-    <div class="dashboard-section dashboard-panel">
-        <div class="section-heading">
-            <h2>Status Breakdown</h2>
-            <p>See how your applications are distributed across stages.</p>
-        </div>
-        <div class="status-breakdown">
-            {% for status, count in stats.by_status.items() %}
-                <div class="status-item">
-                    <span class="status-label">{{ status }}</span>
-                    <div class="status-bar-container">
-                        <div class="status-bar" style="width: {{ (count / stats.total * 100) if stats.total > 0 else 0 }}%; background-color: {{ status_colors.get(status, '#95a5a6') }}"></div>
-                    </div>
-                    <span class="status-count">{{ count }}</span>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
+    {% if suggested and suggested|length > 0 %}
+      <ul class="recent">
+        {% for s in suggested[:5] %}
+          <li>
+            <div class="avatar">{{ s.company[:1]|upper }}</div>
+            <div class="meta">
+              <div class="role">{{ s.role }} · {{ s.company }}</div>
+              <div class="sub">{{ s.location }} — {{ s.season }}</div>
+            </div>
+            <a href="{{ url_for('add_application') }}" class="btn btn-ghost" style="font-size:.78rem; padding:6px 12px">Track</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="empty" style="padding:36px 10px">
+        <p style="margin:0">No suggestions available.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
 
-    <div class="dashboard-section dashboard-panel">
-        <div class="section-heading">
-            <h2>Upcoming Interview Reminders</h2>
-            <p>Keep track of interviews that are coming up so you can prepare on time.</p>
-        </div>
-        <div class="reminder-list">
-            {% if reminders %}
-                {% for reminder in reminders %}
-                    <div class="reminder-card">
-                        <div class="reminder-card-header">
-                            <div>
-                                <h3>{{ reminder.company }}</h3>
-                                <p class="reminder-role">{{ reminder.role }}</p>
-                            </div>
-                            <span class="reminder-date">📅 {{ reminder.date }}</span>
-                        </div>
-                        <p class="reminder-location">📍 {{ reminder.location }}</p>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <div class="empty-state">
-                    <p>No interviews are scheduled yet. <a href="{{ url_for('view_applications') }}">Mark an interview</a> to get reminders here.</p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <div class="dashboard-section dashboard-panel">
-        <h2>Suggested Internships</h2>
-        <p class="subtitle" style="margin-bottom: 1.5rem; font-size: 0.95rem;">Companies actively recruiting for internships</p>
-        <div class="suggested-internships">
-            {% for internship in suggested %}
-                <div class="internship-card">
-                    <div class="internship-header">
-                        <h3>{{ internship.company }}</h3>
-                        <span class="season-badge">{{ internship.season }}</span>
-                    </div>
-                    <p class="internship-role">{{ internship.role }}</p>
-                    <p class="internship-location">📍 {{ internship.location }}</p>
-                    <button class="btn btn-small btn-apply" onclick="openCareerPage('{{ internship.company }}')">View Openings</button>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-</div>
-
-<script>
-function openCareerPage(company) {
-    const careerPages = {
-        'Google': 'https://careers.google.com',
-        'Microsoft': 'https://careers.microsoft.com',
-        'Amazon': 'https://www.amazon.jobs',
-        'Apple': 'https://www.apple.com/careers',
-        'Meta': 'https://www.metacareers.com',
-        'Goldman Sachs': 'https://www.goldmansachs.com/careers',
-        'JP Morgan': 'https://careers.jpmorgan.com',
-        'McKinsey': 'https://www.mckinsey.com/careers',
-        'Tesla': 'https://www.tesla.com/careers',
-        'Stripe': 'https://stripe.com/jobs',
-    };
-    window.open(careerPages[company] || 'https://www.linkedin.com/jobs', '_blank');
-}
-</script>
 {% endblock %}
+ss="sub">{{ r.location }} — Updated {{ r.date }}</div>
+            </div>
+            <span class="pill pill-interview">Interview</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="empty" style="padding:36px 10px">
+        <p style="margin:0">No upcoming interviews scheduled.</p>
+      </div>
+    {% endif %}
+  </div>
 
+  <div class="card">
+    <div class="section-head" style="margin-top:0">
+      <h2 style="font-size:1.2rem">Suggested Internships</h2>
+      <span class="more">Curated picks</span>
+    </div>
+
+    {% if suggested and suggested|length > 0 %}
+      <ul class="recent">
+        {% for s in suggested[:5] %}
+          <li>
+            <div class="avatar">{{ s.company[:1]|upper }}</div>
+            <div class="meta">
+              <div class="role">{{ s.role }} · {{ s.company }}</div>
+              <div class="sub">{{ s.location }} — {{ s.season }}</div>
+            </div>
+            <a href="{{ url_for('add_application') }}" class="btn btn-ghost" style="font-size:.78rem; padding:6px 12px">Track</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="empty" style="padding:36px 10px">
+        <p style="margin:0">No suggestions available.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}
