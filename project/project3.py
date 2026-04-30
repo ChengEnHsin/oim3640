@@ -46,9 +46,10 @@ def find_nearest_mbta_stop(latitude, longitude):
         'filter[latitude]': latitude,
         'filter[longitude]': longitude,
         'api_key': MBTA_API_KEY,
-        'limit': 1
+        'page[limit]': 1
     }
     
+    response = None
     try:
         response = requests.get(url, params=params)
         response.raise_for_status()
@@ -61,7 +62,10 @@ def find_nearest_mbta_stop(latitude, longitude):
             return (stop_name, wheelchair_accessible)
         return None
     except requests.exceptions.RequestException as e:
-        print(f"Error finding MBTA stop: {e}")
+        if response is not None:
+            print(f"Error finding MBTA stop: {e} - {response.text}")
+        else:
+            print(f"Error finding MBTA stop: {e}")
         return None
 
 
