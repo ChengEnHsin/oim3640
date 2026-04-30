@@ -3,4 +3,5 @@ Werkzeug==2.3.6
 gunicorn>=22.0.0
 setuptools
 wheel
-
+openai
+python-dotenv
