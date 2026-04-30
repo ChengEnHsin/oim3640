@@ -94,63 +94,63 @@ def get_suggested_internships():
             "role": "Software Engineer Intern",
             "location": "Mountain View, CA",
             "season": "Summer 2026",
-            "job_url": "https://careers.google.com/jobs/results/"
+            "job_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Engineer%20Intern&location=Mountain%20View%2C%20CA"
         },
         {
             "company": "Microsoft",
             "role": "Internship Program - Tech",
             "location": "Redmond, WA",
             "season": "Summer 2026",
-            "job_url": "https://careers.microsoft.com/us/en"
+            "job_url": "https://www.indeed.com/jobs?q=Microsoft+Internship+Program+Tech&l=Redmond%2C+WA"
         },
         {
             "company": "Amazon",
             "role": "Software Development Engineer Intern",
             "location": "Seattle, WA",
             "season": "Summer 2026",
-            "job_url": "https://www.amazon.jobs/en/"
+            "job_url": "https://www.glassdoor.com/Job/seattle-software-development-engineer-intern-jobs-SRCH_IL.0,7_IC1150505_KO8,46.htm"
         },
         {
             "company": "Apple",
             "role": "Software Engineering Internship",
             "location": "Cupertino, CA",
             "season": "Summer 2026",
-            "job_url": "https://www.apple.com/careers/"
+            "job_url": "https://www.linkedin.com/jobs/search/?keywords=Software%20Engineering%20Internship&location=Cupertino%2C%20CA"
         },
         {
             "company": "Meta",
             "role": "Engineering Internship",
             "location": "Menlo Park, CA",
             "season": "Summer 2026",
-            "job_url": "https://www.metacareers.com/"
+            "job_url": "https://www.indeed.com/jobs?q=Meta+Engineering+Internship&l=Menlo+Park%2C+CA"
         },
         {
             "company": "Goldman Sachs",
             "role": "Summer Internship Program",
             "location": "New York, NY",
             "season": "Summer 2026",
-            "job_url": "https://www.goldmansachs.com/careers/"
+            "job_url": "https://www.indeed.com/jobs?q=Goldman+Sachs+Summer+Internship&l=New+York%2C+NY"
         },
         {
             "company": "JP Morgan",
             "role": "Summer Analyst Program",
             "location": "New York, NY",
             "season": "Summer 2026",
-            "job_url": "https://careers.jpmorgan.com/us/en/home"
+            "job_url": "https://www.glassdoor.com/Job/new-york-jp-morgan-summer-analyst-jobs-SRCH_IL.0,8_IC1132348_KO9,20.htm"
         },
         {
             "company": "Tesla",
             "role": "Engineering Internship",
             "location": "Palo Alto, CA",
             "season": "Summer 2026",
-            "job_url": "https://www.tesla.com/careers"
+            "job_url": "https://www.linkedin.com/jobs/search/?keywords=Tesla%20Engineering%20Internship&location=Palo%20Alto%2C%20CA"
         },
         {
             "company": "Stripe",
             "role": "Software Engineering Internship",
             "location": "San Francisco, CA",
             "season": "Summer 2026",
-            "job_url": "https://stripe.com/jobs"
+            "job_url": "https://www.indeed.com/jobs?q=Stripe+Software+Engineering+Internship&l=San+Francisco%2C+CA"
         },
     ]
 
