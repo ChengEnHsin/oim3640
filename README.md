@@ -8,8 +8,14 @@ Concentrations: Business Analytics and Operations Management
 
 Interests: Dance, Aviation, Travel, Books
 
-# #my projects
+## My Folders
 
-[mini project](project)
-
-[final project](final%20project)
+- [code](code)
+- [data](data)
+- [final project](final%20project)
+- [helloflask](helloflask)
+- [logs](logs)
+- [notebooks](notebooks)
+- [project](project)
+- [templates](templates)
+- [www](www)
